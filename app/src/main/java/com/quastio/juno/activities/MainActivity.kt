@@ -2,7 +2,7 @@ package com.quastio.juno.activities
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
-import android.graphics.Bitmap
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -19,18 +19,21 @@ import com.quastio.juno.models.ResultWrapper
 import com.quastio.juno.utils.ThumbnailRetriever
 import com.quastio.juno.viewmodels.FotoViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        private const val VIDEO="video"
+        private const val IMAGE="image"
+        const val URL="url"
+    }
     lateinit var fotoViewModel: FotoViewModel
+    private var loadUrl:String?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -81,9 +84,18 @@ class MainActivity : AppCompatActivity() {
 
                 }, mYear, mMonth, mDay
             )
-//            datePickerDialog.datePicker.maxDate=(Date().time)
+            datePickerDialog.datePicker.maxDate=(Date().time)
 
             datePickerDialog.show()
+        }
+        action_iv.setOnClickListener {
+            if (action_iv.tag==IMAGE){
+                val intent=Intent(this,ImageActivity::class.java)
+                intent.putExtra(URL,loadUrl)
+                startActivity(intent)
+            }else if (action_iv.tag== VIDEO){
+                TODO()
+            }
         }
     }
 
@@ -96,7 +108,6 @@ class MainActivity : AppCompatActivity() {
                     title?.let {
                         title_tv.text = title
                     }
-                    var loadUrl:String?=null
                     url?.let {
                         loadUrl=url
                     }
@@ -108,6 +119,7 @@ class MainActivity : AppCompatActivity() {
                         when (mediaType) {
                             "video" -> {
                                 action_iv.setImageResource(R.drawable.ic_baseline_play_circle_outline)
+                                action_iv.tag = VIDEO
                                 val videoId=ThumbnailRetriever.extractYTId(it)
 
                                 videoId?.let {
@@ -116,17 +128,18 @@ class MainActivity : AppCompatActivity() {
                                     Glide.with(this@MainActivity)
                                         .setDefaultRequestOptions(requestOptions)
                                         .load("https://img.youtube.com/vi/$videoId/0.jpg")
-                                        .into(imageView)
+                                        .into(main_iv)
                                 }
 
                             }
                             else -> {
                                 action_iv.setImageResource(R.drawable.ic_baseline_zoom_in)
+                                action_iv.tag = IMAGE
 
                                 Glide.with(this@MainActivity)
                                     .load(it)
                                     .transition(DrawableTransitionOptions.withCrossFade())
-                                    .into(imageView)
+                                    .into(main_iv)
                             }
                         }
 
@@ -147,5 +160,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
- 
+
+
+
 }
