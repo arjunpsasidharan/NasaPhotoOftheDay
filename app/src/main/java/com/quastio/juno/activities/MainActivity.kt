@@ -3,9 +3,12 @@ package com.quastio.juno.activities
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -19,8 +22,6 @@ import com.quastio.juno.models.ResultWrapper
 import com.quastio.juno.utils.ThumbnailRetriever
 import com.quastio.juno.viewmodels.FotoViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.launch
-import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -33,9 +34,11 @@ class MainActivity : AppCompatActivity() {
     }
     lateinit var fotoViewModel: FotoViewModel
     private var loadUrl:String?=null
+    private var videoId:String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main)
 
         fotoViewModel = ViewModelProvider(this).get(FotoViewModel::class.java)
@@ -94,7 +97,12 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra(URL,loadUrl)
                 startActivity(intent)
             }else if (action_iv.tag== VIDEO){
-                TODO()
+                videoId?.let {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:$videoId"))
+                    intent.putExtra("VIDEO_ID", videoId)
+                    startActivity(intent)
+                }
+
             }
         }
     }
@@ -103,7 +111,6 @@ class MainActivity : AppCompatActivity() {
         when (it) {
             is ResultWrapper.Success -> {
                 val response = it.data
-                Toast.makeText(this, response.mediaType, Toast.LENGTH_SHORT).show()
                 with(response) {
                     title?.let {
                         title_tv.text = title
@@ -120,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                             "video" -> {
                                 action_iv.setImageResource(R.drawable.ic_baseline_play_circle_outline)
                                 action_iv.tag = VIDEO
-                                val videoId=ThumbnailRetriever.extractYTId(it)
+                                 videoId=ThumbnailRetriever.extractYTId(it)
 
                                 videoId?.let {
                                     val requestOptions = RequestOptions()
@@ -146,6 +153,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     explanation?.let {
                         description_tv.text = explanation
+                        scroll_view.fullScroll(ScrollView.FOCUS_UP)
                     }
                 }
             }

@@ -7,6 +7,7 @@
     android:background="#000"
     tools:context=".activities.MainActivity">
 
+
     <ImageView
         android:id="@+id/main_iv"
         android:layout_width="0dp"
@@ -19,7 +20,25 @@
         app:layout_constraintHeight_percent="1"
         android:scaleType="fitXY"
         />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/view"
+        app:layout_constraintBottom_toBottomOf="@id/barrier"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/transparent"
+        />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="title_tv"
+        android:layout_marginTop="10dp"
+        android:id="@+id/barrier"
+        />
     <TextView
         android:id="@+id/title_tv"
         android:layout_width="0dp"
@@ -28,7 +47,6 @@
         android:layout_marginEnd="20dp"
         android:textSize="24sp"
         android:textColor="#ffff"
-        android:background="@color/transparent"
         app:layout_constraintEnd_toStartOf="@+id/calender_iv"
         android:layout_marginTop="40dp"
         app:layout_constraintHorizontal_bias="0.0"
@@ -54,10 +72,8 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:padding="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/guide_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent=".25"
         tools:src="@drawable/ic_baseline_zoom_in" />
 
 
@@ -66,24 +82,33 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:id="@+id/guide_1"
-            app:layout_constraintGuide_percent=".85"
+            app:layout_constraintGuide_percent=".5"
             />
-
-    <TextView
-        android:id="@+id/description_tv"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="10dp"
-        android:background="@color/transparent"
-        android:textColor="#ffff"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/action_iv"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/action_iv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guide_1"
+        app:layout_constraintTop_toBottomOf="@+id/guide_1"
+        android:background="@color/transparent"
+        android:fillViewport="true"
+        android:id="@+id/scroll_view"
+        >
+        <TextView
+            android:id="@+id/description_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="10dp"
+            android:textColor="#ffff"
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:gravity="bottom"
+            android:layout_marginBottom="20dp"
+            tools:text="Description\n sdjbsdjsdbsjdsd" />
+    </ScrollView>
 
-        tools:text="Description\n sdjbsdjsdbsjdsd" />
 
     <View
         android:layout_width="match_parent"
